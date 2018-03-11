@@ -11,7 +11,7 @@ import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
 public class ArmPickupCmd  extends Command {
-	private static final int exeTime = 1000;	//1 second(1000ms) to get reset positiom
+	
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
@@ -77,7 +77,7 @@ public class ArmPickupCmd  extends Command {
 		//go to that encoder position
         Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
         Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(160.0/360.0 * Robot.SHOVEL_CIRCLE_CNT), 800);
+        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(197.0/360.0 * Robot.SHOVEL_CIRCLE_CNT), 800);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();

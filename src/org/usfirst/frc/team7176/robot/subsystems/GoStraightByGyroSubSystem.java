@@ -14,16 +14,16 @@ public class GoStraightByGyroSubSystem extends PIDSubsystem{
 	
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
 	
+	private static double pidOutputRange = 0.5;
 	
 	private static double drvCmd = 0;
-	private static int delayCnt = 0;
 
 	public GoStraightByGyroSubSystem(double driveVel) {
-		super("GoStraightByGyro", 0.04, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
+		super("GoStraightByGyro", 0.09, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
 		setAbsoluteTolerance(0.5);
 		getPIDController().setContinuous(false);
 		setInputRange(-360,360);  //angle degree
-		setOutputRange(-driveVel,driveVel); 
+		setOutputRange(-pidOutputRange,pidOutputRange); 
 		drvCmd = driveVel;
 		gyroSPI.reset();
 
@@ -50,5 +50,13 @@ public class GoStraightByGyroSubSystem extends PIDSubsystem{
     	leftMotor1.set(0); // this is where the computed output value from the PIDController is applied to the motor
     	leftMotor2.set(0);
     	
+    }
+    
+    public void setSpeed(double speed) {
+    	drvCmd = speed;
+    }
+    
+    public void setPIDRange(double range) {
+    	pidOutputRange = range;
     }
 }

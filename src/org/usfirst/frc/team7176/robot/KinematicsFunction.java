@@ -68,8 +68,8 @@ public class KinematicsFunction {
 
         double thelta2 = 0;
 
-        double belta = 0;
-        double alpha = 0;
+
+ 
         double c2 = (x * x + y * y - l1 * l1 - l2 * l2) / (2 * l1 * l2);
 
         if (Math.abs(c2) > 1)
@@ -83,7 +83,7 @@ public class KinematicsFunction {
         {
             s2 = -Math.sqrt(1 - c2 * c2);
             thelta2 = Math.atan2(s2, c2);
-            belta = Math.atan2(y, x);
+
             double k1 = l1 + l2 * Math.cos(thelta2) ;
             double k2 = l2* Math.sin(thelta2);
             thelta1 = Math.atan2(y, x) + Math.atan2(k2, k1);

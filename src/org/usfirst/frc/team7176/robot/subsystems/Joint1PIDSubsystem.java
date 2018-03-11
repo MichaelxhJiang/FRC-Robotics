@@ -11,7 +11,7 @@ public class Joint1PIDSubsystem extends PIDSubsystem { // This system extends PI
 
 	public Joint1PIDSubsystem() {
 		super("Joint1", 0.03, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
-		setAbsoluteTolerance(5);
+		setAbsoluteTolerance(2);
 		getPIDController().setContinuous(false);
 		//setInputRange(-32767,32767);
 		setOutputRange(-1.0,1.0);

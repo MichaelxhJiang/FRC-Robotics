@@ -59,7 +59,7 @@ public class ArmPosForScaleCmd  extends Command {
 		//go to that encoder position
         Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
         Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(50.0 /360.0 * Robot.SHOVEL_CIRCLE_CNT), 2000);
+        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(35.0 /360.0 * Robot.SHOVEL_CIRCLE_CNT), 1700);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();
@@ -76,7 +76,7 @@ public class ArmPosForScaleCmd  extends Command {
         else
         {
             
-       	 double[] thelta = KinematicsFunction.getJointAngleL(moveStepX[moveStep], moveStepY[moveStep]);
+       	 	double[] thelta = KinematicsFunction.getJointAngleL(moveStepX[moveStep], moveStepY[moveStep]);
             
             Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
             Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;

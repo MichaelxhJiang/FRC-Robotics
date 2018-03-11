@@ -3,25 +3,22 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.Encoder;
 import org.usfirst.frc.team7176.robot.Robot;
 import org.usfirst.frc.team7176.robot.RobotMap;
-import org.usfirst.frc.team7176.robot.commands.Joint1Cmd;
-import org.usfirst.frc.team7176.robot.commands.Joint2Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
 public class ArmPosReleaseCmd  extends Command {
 	private static final int exeTime = 1000;	//1 second(1000ms) to get reset positiom
-	private Encoder j1Encoder  = RobotMap.jointEncoder1;
-	private Encoder j2Encoder  = RobotMap.jointEncoder2;
+
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
-	private int stepCnt = 0;
+
 	public ArmPosReleaseCmd() {
-		Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-90.0/360 * Robot.SHOVEL_CIRCLE_CNT), exeTime);
+		Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-50.0/360 * Robot.SHOVEL_CIRCLE_CNT), exeTime);
 		
 	}
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		stepCnt = 0;
+
 		Robot.joint3Cmd.start();
 	}
 

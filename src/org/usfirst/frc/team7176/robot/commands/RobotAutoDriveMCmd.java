@@ -8,10 +8,11 @@ public class RobotAutoDriveMCmd extends Command{
 	private int flag = 0;
 	private int step = 0;
 	private final static double SET_DISTANCE1 = 100;//100; //go forward a little bit
-	private final static double SET_DISTANCE2 = 100;//200; //go straight distance to right
-	private final static double SET_DISTANCE3 = 100;//400  /go straight to scale
-	private final static double SET_VEL = 0.3;
-	private final static double SET_TURN_VEL = 0.3;
+	private final static double SET_DISTANCE2 = 200;//200; //go straight distance to right
+	private final static double SET_DISTANCE3 = 500;//400  /go straight to scale
+	private final static double SET_VEL = 0.5;
+	private final static double SET_VEL2 = 0.4;
+	private final static double SET_TURN_VEL = 0.36;
 	private final static double TURN_ANGLE1 = 90;
 	private final static double TURN_ANGLE2 = -90;
 	public RobotAutoDriveMCmd() {
@@ -48,7 +49,7 @@ public class RobotAutoDriveMCmd extends Command{
 					Robot.turnByGyroCmd.cancel();
 					
 					//go straight again
-					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL,SET_DISTANCE2);
+					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL2,SET_DISTANCE2);
 					Robot.drvByDistanceCmd.start();
 					step = 2;
 				}

@@ -7,8 +7,8 @@ import org.usfirst.frc.team7176.robot.RobotMap;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
 
-public class Move2ScaleFromReset extends Command {
-	private final static int RUN_TIME = 3000;
+public class ReleaseHookCmd  extends Command{
+	private static final int exeTime = 1000;	//1 second(1000ms) to get reset positiom
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
@@ -24,22 +24,22 @@ public class Move2ScaleFromReset extends Command {
     private double [] moveStepY = new double[1000];
     private final int EXE_TIME = 20;
 
-	public Move2ScaleFromReset() {
+	public ReleaseHookCmd() {
 		 currentX = Robot.armPosX;
          currentY = Robot.armPosY;
-         targetX = Robot.SCALE_X;
-         targetY = Robot.SCALE_Y;
+         targetX = Robot.MIDDLE_X;
+         targetY = Robot.MIDDLE_Y;
          
          moveStep = 0;
          
-         moveTime = RUN_TIME;
+         moveTime = exeTime;
          movePlanStep = moveTime / EXE_TIME;
          for (int i = 0; i < movePlanStep; i++){
              moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * i;
              moveStepY[i] = currentY + (targetY - currentY) / movePlanStep * i;
          }
-         
-         double[] thelta = KinematicsFunction.getJointAngle(moveStepX[moveStep], moveStepY[moveStep]);
+         //uppder elbow function getJointAngleL
+         double[] thelta = KinematicsFunction.getJointAngleL(moveStepX[moveStep], moveStepY[moveStep]);
 
          Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
          Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;
@@ -54,13 +54,15 @@ public class Move2ScaleFromReset extends Command {
 	@Override
 	protected void initialize() {
 		
-		//go to that encoder position
-        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
-        Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-30.0 /360.0 * Robot.SHOVEL_CIRCLE_CNT), 300);
+		//go to that encoder position, hard code some value here, encoder value and position value
+        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), 925, moveTime);
+        Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), -878, moveTime);
+        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-15.0/360 * Robot.SHOVEL_CIRCLE_CNT), moveTime);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();
+        Robot.armPosX = Robot.MIDDLE_X;
+        Robot.armPosY = Robot.MIDDLE_Y;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -70,30 +72,13 @@ public class Move2ScaleFromReset extends Command {
 		 moveStep++;
          if (moveStep >= movePlanStep)
          {
-        	 Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(- 75.0 /360.0 * Robot.SHOVEL_CIRCLE_CNT), 500);
-        	 Robot.joint3Cmd.start();
+        	 Robot.armPosX = Robot.MIDDLE_X;
+             Robot.armPosY = Robot.MIDDLE_Y;
          }
          else
          {
              
-        	 double[] thelta = KinematicsFunction.getJointAngle(moveStepX[moveStep], moveStepY[moveStep]);
-             
-             Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
-             Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;
-             
-             Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) *Robot. CIRCLE_CNT));
-             Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT)); ;
-             
-             //go to that encoder position
-             Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
-             Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-             Robot.joint1Cmd.start();
-             Robot.joint2Cmd.start();
-             double[] pos = KinematicsFunction.getPositionXY(thelta[0], thelta[1]);
-             Robot.armPosX = pos[0];
-             Robot.armPosY = pos[1];
-             System.out.println("j1EnocdePos = " + Robot.j1EncoderPos);
-             System.out.println("j2EnocdePos = " + Robot.j2EncoderPos);
+        	 
          }
 	
 	}
@@ -103,7 +88,7 @@ public class Move2ScaleFromReset extends Command {
 	protected boolean isFinished() {
 		if (moveStep >= movePlanStep) {
 			
-			System.out.println("rise up Job done");
+			System.out.println("middle position Job done");
 			return true;
 		}else {
 		

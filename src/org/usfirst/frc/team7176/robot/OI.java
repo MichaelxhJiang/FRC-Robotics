@@ -6,11 +6,10 @@
 /*----------------------------------------------------------------------------*/
 
 package org.usfirst.frc.team7176.robot;
-import org.usfirst.frc.team7176.robot.commands.Joint1Cmd;
 
 import edu.wpi.first.wpilibj.Joystick;
 
-import edu.wpi.first.wpilibj.buttons.Button;
+
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -23,7 +22,7 @@ public class OI {
 	// You create one by telling it which joystick it's on and which button
 	// number it is.
 	 public Joystick joyStick = new Joystick(0);
-	 public JoystickButton button = new JoystickButton(joyStick, 1);
+	 public Joystick joyStick2 = new Joystick(1);
 	 
 	// There are a few additional built in buttons you can use. Additionally,
 	// by subclassing Button you can create custom triggers and bind those to

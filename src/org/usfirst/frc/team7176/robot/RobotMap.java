@@ -7,6 +7,9 @@
 
 package org.usfirst.frc.team7176.robot;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 
@@ -29,6 +32,9 @@ public class RobotMap {
 	 public static VictorSP jointMotor1 = new VictorSP(4);
 	 public static VictorSP jointMotor2 = new VictorSP(5);
 	 public static VictorSP jointMotor3 = new VictorSP(6);
+	 
+	 public static TalonSRX hookMotor1 = new TalonSRX(0);
+	 public static TalonSRX hookMotor2 = new TalonSRX(1);
 	 
 	 public static Encoder leftEncoder = new Encoder(0,1,false,EncodingType.k4X);
 	 public static Encoder rightEncoder = new Encoder(2,3,false,EncodingType.k4X);

@@ -10,7 +10,7 @@ import org.usfirst.frc.team7176.robot.commands.Joint2Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
-public class ArmPickReadyCmd  extends Command {
+public class ArmPickReadyHCmd  extends Command {
 	
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
@@ -27,11 +27,11 @@ public class ArmPickReadyCmd  extends Command {
     private double [] moveStepY = new double[1000];
     private final int EXE_TIME = 20;
 
-	public ArmPickReadyCmd() {
+	public ArmPickReadyHCmd() {
 		currentX = Robot.armPosX;
         currentY = Robot.armPosY;
-        targetX = Robot.READYPICKUP_X;
-        targetY = Robot.READYPICKUP_Y;
+        targetX = Robot.READYPICKUP_XH;
+        targetY = Robot.READYPICKUP_YH;
        
         moveStep = 0;
         
@@ -61,7 +61,7 @@ public class ArmPickReadyCmd  extends Command {
 		 //go to that encoder position
         Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
         Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(35.0/360 * Robot.SHOVEL_CIRCLE_CNT), 1200);
+        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(38.0/360 * Robot.SHOVEL_CIRCLE_CNT), 1500);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();

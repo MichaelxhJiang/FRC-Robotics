@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ArmMiddlePositionCmd extends Command {
-	private static final int exeTime = 1000;	//1 second(1000ms) to get reset positiom
+	private static final int exeTime = 3000;	//1 second(1000ms) to get reset positiom
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
@@ -23,7 +23,7 @@ public class ArmMiddlePositionCmd extends Command {
     private double [] moveStepX = new double[1000];
     private double [] moveStepY = new double[1000];
     private final int EXE_TIME = 20;
-    private int runState = 0;
+
 	public ArmMiddlePositionCmd() {
 		 currentX = Robot.armPosX;
          currentY = Robot.armPosY;
@@ -32,7 +32,7 @@ public class ArmMiddlePositionCmd extends Command {
          
          moveStep = 0;
          
-         moveTime = 3000;
+         moveTime = exeTime;
          movePlanStep = moveTime / EXE_TIME;
          for (int i = 0; i < movePlanStep; i++){
              moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * i;
@@ -53,27 +53,27 @@ public class ArmMiddlePositionCmd extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		
+		System.out.println("Starting Arm Middle Position Cmd");
 		//go to that encoder position, hard code some value here, encoder value and position value
-        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), 1322, moveTime);
-        Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), -1950, moveTime);
+        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), 1165, moveTime);
+        Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), -1900, moveTime);
         Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-15.0/360 * Robot.SHOVEL_CIRCLE_CNT), moveTime);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();
-        Robot.armPosX = -30;
-        Robot.armPosY = 35.0;
+        Robot.armPosX = Robot.MIDDLE_X;
+        Robot.armPosY = Robot.MIDDLE_Y;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		
+		System.out.println("moveStep = " + moveStep);
 		 moveStep++;
          if (moveStep >= movePlanStep)
          {
-        	 Robot.armPosX = -30;
-             Robot.armPosY = 35.0;
+        	 Robot.armPosX = Robot.MIDDLE_X;
+             Robot.armPosY = Robot.MIDDLE_Y;
          }
          else
          {

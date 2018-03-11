@@ -12,16 +12,14 @@ public class TurnByGyroSubsystem extends PIDSubsystem {
 	private static Spark rightMotor2 = RobotMap.rightMotor2;
 	
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
-	
-	
-	private static double drvCmd = 0;
+
 	public TurnByGyroSubsystem(double driveVel) {
-		super("TurnByGyro", 0.03, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
+		super("TurnByGyro", 0.05, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
 		setAbsoluteTolerance(5.0);		//1 degree error
 		getPIDController().setContinuous(false);
 		setInputRange(-360,360);  //angle degree
 		setOutputRange(-driveVel,driveVel); 
-		drvCmd = driveVel;
+
 
 	}
 	

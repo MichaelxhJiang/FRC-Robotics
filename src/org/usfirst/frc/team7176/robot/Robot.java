@@ -9,7 +9,7 @@ package org.usfirst.frc.team7176.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.VictorSP;
+
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -17,12 +17,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 
+
 import org.usfirst.frc.team7176.robot.commands.DriveCommand;
 import org.usfirst.frc.team7176.robot.commands.DrvByDistanceCmd;
+import org.usfirst.frc.team7176.robot.commands.HookArmPositionCmd;
+import org.usfirst.frc.team7176.robot.commands.HookLiftCmd;
 import org.usfirst.frc.team7176.robot.commands.Joint1Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint2Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 import org.usfirst.frc.team7176.robot.commands.Move2ScaleFromReset;
+import org.usfirst.frc.team7176.robot.commands.ReleaseHookCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveLCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveMCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveRCmd;
@@ -30,10 +34,12 @@ import org.usfirst.frc.team7176.robot.commands.TurnByGyroCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmResetCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmPosReleaseCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmPosForScaleCmd;
-import org.usfirst.frc.team7176.robot.commands.ArmPosForExchangeCmd;
+import org.usfirst.frc.team7176.robot.commands.ArmPosHoldCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmMiddlePositionCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmPickReadyCmd;
+import org.usfirst.frc.team7176.robot.commands.ArmPickReadyHCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmPickupCmd;
+import org.usfirst.frc.team7176.robot.commands.ArmPosForExchangeCmd;
 import org.usfirst.frc.team7176.robot.subsystems.DriveSubsystem;
 import org.usfirst.frc.team7176.robot.subsystems.GoStraightByGyroSubSystem;
 import org.usfirst.frc.team7176.robot.subsystems.Joint1PIDSubsystem;
@@ -51,8 +57,9 @@ import org.usfirst.frc.team7176.robot.KinematicsFunction;
  * project
  */
 public class Robot extends TimedRobot {
+	private static final boolean AGGRESSIVE = true;	//put block on scale = true
+	private static final boolean SWITCH = false;	//put block on switch instead of scale
 	private long autoStartTime = 0;
-	
 	public static RobotMap robotMap = new RobotMap();
 	public static final DriveSubsystem drvSubsystem	= new DriveSubsystem();
 	public static final Joint1PIDSubsystem joint1Subsystem = new Joint1PIDSubsystem();
@@ -65,11 +72,15 @@ public class Robot extends TimedRobot {
 	public static ArmResetCmd armResetCmd;
 	public static ArmPickReadyCmd armPickReadyCmd;
 	public static ArmPickupCmd armPickupCmd;
-	public static ArmPosForExchangeCmd armPosForExchangeCmd;
+	public static ArmPosHoldCmd armPosHoldCmd;
 	public static ArmPosForScaleCmd armPosForScaleCmd;
 	public static ArmPosReleaseCmd armPosReleaseCmd;
 	public static ArmMiddlePositionCmd armMiddlePositionCmd;
-	
+	public static ArmPosForExchangeCmd armPosForExchangeCmd;
+	public static ArmPickReadyHCmd armPickReadyHCmd;
+	public static HookLiftCmd hookLiftCmd;
+	public static HookArmPositionCmd hookArmPositionCmd;
+	public static ReleaseHookCmd releaseHookCmd;
 	
 	public static OI m_oi = new OI();
 	
@@ -85,24 +96,25 @@ public class Robot extends TimedRobot {
 	public static int j3EncoderPos = 0;
     public static double j1TurnAngle = 0;
     public static double j2TurnAngle = 0;
-    public final static double RESET_X = -7.0;
-    public final static double RESET_Y = 0.0;
-    public final static double SCALE_X = -38.0;
-    public final static  double SCALE_Y = 109.2;
-    public final static double SWITCH_X = -60.85;
-    public final static double SWITCH_Y = -8.60;
-    public final static double READYPICKUP_X = -70.77;
-    public final static double READYPICKUP_Y = -55.63;
-    public final static  double MIDDLE_X = -11;
-    public final static double MIDDLE_Y = 1.95;
+    public final static double RESET_X = -14.0;
+    public final static double RESET_Y = 4;
+    public final static double SCALE_X = -24.0;
+    public final static  double SCALE_Y = 120;
+    public final static double SWITCH_X = -50.85;
+    public final static double SWITCH_Y = -8.20;
+    public final static double READYPICKUP_X = -60.77;
+    public final static double READYPICKUP_Y = -62.63;
+    public final static  double MIDDLE_X = -28.35;
+    public final static double MIDDLE_Y = 48.8;
     public final static  double PICKUP_X = READYPICKUP_X + 10;
-    public final static double PICKUP_Y = READYPICKUP_Y - 5;
+    public final static double PICKUP_Y = READYPICKUP_Y - 10;
     public final static int CIRCLE_CNT = 2256;
     public final static int SHOVEL_CIRCLE_CNT = 1988;
-    public final static double LOW_GEAR = 0.3;
-    public final static double FULL_GEAR = 1.0;
+    public final static double LOW_GEAR = 0.4;
+    public final static double FULL_GEAR = 0.7;
 	public static double gear = LOW_GEAR;
-	
+	public final static double READYPICKUP_XH = -60.77;
+	public final static double READYPICKUP_YH = -56.63;
 	
 	public static DrvByDistanceCmd drvByDistanceCmd;
 	public static TurnByGyroCmd turnByGyroCmd;
@@ -112,11 +124,13 @@ public class Robot extends TimedRobot {
 	public static TurnByGyroSubsystem turnByGyroSubsystem; 
 	
 	public static GoStraightByGyroSubSystem goStraightByGyroSubSystem; 
+	
+	private int flagValue1 = 0; 
+	
 	Command m_autonomousCommand;
 	SendableChooser<Command> m_chooser = new SendableChooser<>();
 
 	DriveCommand driveCommand;
-	private boolean testFlag = false;
 	
 	/**
 	 * This function is run when the robot is first started up and should be
@@ -146,7 +160,7 @@ public class Robot extends TimedRobot {
 		double[] thelta = KinematicsFunction.getJointAngle(RESET_X, RESET_Y);
         
         j1ResetAngle = thelta[0];
-        j2ResetAngle = thelta[1];
+        j2ResetAngle = thelta[1];// - 3.0/180 * Math.PI;
 
         j1TurnAngle = thelta[0] - j1ResetAngle;
         j2TurnAngle = thelta[1] - j2ResetAngle;
@@ -157,7 +171,8 @@ public class Robot extends TimedRobot {
         j2EncoderPos = (int)(j2ResetPos - (j2TurnAngle / (2 * Math.PI) * CIRCLE_CNT)); 
 		
       //for camera
-      	//CameraServer.getInstance().addAxisCamera("10.71.76.37");
+      	CameraServer.getInstance().addAxisCamera("10.71.76.38");
+      	CameraServer.getInstance().addAxisCamera("10.71.76.37");
 	}
 
 	/**
@@ -172,19 +187,20 @@ public class Robot extends TimedRobot {
 		
 		if (robotAutoDriveLCmd != null) {
 			robotAutoDriveLCmd.cancel();
-			
-			
+	
 		}
 		if (robotAutoDriveMCmd != null) {
 			robotAutoDriveMCmd.cancel();
-			
 			
 		}
 		if (robotAutoDriveRCmd != null) {
 			robotAutoDriveRCmd.cancel();
 			
-			
 		}
+		if (turnByGyroSubsystem != null) turnByGyroSubsystem.disable();
+		if (goStraightByGyroSubSystem != null) goStraightByGyroSubSystem.disable();
+		
+		
 		
 	}
 
@@ -211,39 +227,48 @@ public class Robot extends TimedRobot {
 		//receive FMS system command
 		String gameData;
 		gameData = DriverStation.getInstance().getGameSpecificMessage();
+		
 		//the command will look like LRL, LLL, RLR ... to tell your which side is your switch and scale
 		// the first letter for switch, the L-left, R- Right
 		//here we need know which side of scale is our color
 		//0 -- for switch
 		// 1- for scale
 		// 2 - for other side switch
+		if (gameData.length() < 3) gameData = "LXL";
 		System.out.println(gameData);
-		
-		
-		
+
 		RobotMap.jointEncoder1.reset();
 		RobotMap.jointEncoder2.reset();
 		RobotMap.jointEncoder3.reset();
 		RobotMap.gyroSPI.reset();
 		//arm hold current position
-		joint1Cmd = new Joint1Cmd(RobotMap.jointEncoder1.getRaw(), 0, 500);
-		joint2Cmd = new Joint2Cmd(RobotMap.jointEncoder2.getRaw(), 0, 500);
-		joint3Cmd = new Joint3Cmd(RobotMap.jointEncoder3.getRaw(), 0, 500);
+		joint1Cmd = new Joint1Cmd(RobotMap.jointEncoder1.getRaw(), 0, 20);
+		joint2Cmd = new Joint2Cmd(RobotMap.jointEncoder2.getRaw(), 0, 20);
+		joint3Cmd = new Joint3Cmd(RobotMap.jointEncoder3.getRaw(), 0, 20);
 		joint1Cmd.start();
 		joint2Cmd.start();
 		joint3Cmd.start();
 		
 		
-		String autoSelected = SmartDashboard.getString("Position Selection", ""); 
+	//	String autoSelected = SmartDashboard.getString("Position Selection", ""); 
 		System.out.println("Select = " + m_autonomousCommand);
 		if (m_autonomousCommand == robotAutoDriveLCmd) { 
 			if(gameData.charAt(1) == 'L')
 			{
-				robotAutoDriveLCmd.setFlag(0);
+				if (!AGGRESSIVE) {
+					robotAutoDriveLCmd.setFlag(0);
+				}else {
+					robotAutoDriveLCmd.setFlag(2);
+				}
+				
 				System.out.println("L");
-			} else {
+			} else if(gameData.charAt(1) == 'R'){
 				robotAutoDriveLCmd.setFlag(1);
 				System.out.println("R");
+			}
+			else {	//by default go to Left
+				robotAutoDriveLCmd.setFlag(0);
+				System.out.println("L");
 			}
 			robotAutoDriveLCmd.start();
 			System.out.println("Left Position");
@@ -257,10 +282,18 @@ public class Robot extends TimedRobot {
 			
 			if(gameData.charAt(1) == 'R')
 			{
-				robotAutoDriveRCmd.setFlag(0);
+				if (!AGGRESSIVE) {
+					robotAutoDriveRCmd.setFlag(0);
+				}else {
+					robotAutoDriveRCmd.setFlag(2);
+				}
+				
 				System.out.println("R");
-			} else {
+			} else if(gameData.charAt(1) == 'L'){
 				robotAutoDriveRCmd.setFlag(1);
+				System.out.println("L");
+			}else {
+				robotAutoDriveRCmd.setFlag(0);
 				System.out.println("R");
 			}
 			robotAutoDriveRCmd.start();
@@ -276,10 +309,10 @@ public class Robot extends TimedRobot {
 	public void autonomousPeriodic() {
 		long time = System.currentTimeMillis() - autoStartTime;	//time since auto started
 		SmartDashboard.putNumber("Auto Running Time ", time/1000);
-		if (time <= 14000 ) {
+		if (time <= 15000 ) {
 			Scheduler.getInstance().run();
 		}else {
-			Scheduler.getInstance().disable();
+			//Scheduler.getInstance().disable();
 		}
 		
 		SmartDashboard.putNumber("Gyro angle ", RobotMap.gyroSPI.getAngle());
@@ -299,7 +332,7 @@ public class Robot extends TimedRobot {
 		//start receive the joystick drv command 
 		driveCommand = new DriveCommand();
 		driveCommand.start();
-		/*
+		/* do not reset encoder otherwise we will lost joint angle
 		RobotMap.jointEncoder1.reset();
 		RobotMap.jointEncoder2.reset();
 		RobotMap.jointEncoder3.reset();*/
@@ -315,51 +348,70 @@ public class Robot extends TimedRobot {
 		// getThrottel -- right trigger button 0 -- not pressed , 1 - pressed
 		// getTwist  - left trigger button   0 -- not pressed, 1 -- pressed
 		 
-		if ( m_oi.joyStick.getTwist() < 0.6){  // Right trigger button
-			gear --;
-			if (gear <=0) gear = LOW_GEAR;
+		if (m_oi.joyStick.getThrottle() > 0.5) {
+			if (flagValue1 < 0.5) {
+				flagValue1++;
+				stopAllHighLevelCmd();
+				armPosForExchangeCmd = new ArmPosForExchangeCmd();
+				armPosForExchangeCmd.start();
+				System.out.println("Exchange");
+			}
+			
+		}else {
+			flagValue1 --;
+			if (flagValue1 <=0) flagValue1 = 0;
 		}
 		
-		if (m_oi.joyStick.getRawButton(5)) {
-			gear ++;
-			if (gear >= 1) gear = FULL_GEAR;
+		if ( m_oi.joyStick.getTwist() > 0.6){  // Right trigger button
+			gear = FULL_GEAR;
+		}else {
+			gear = LOW_GEAR; 
+		}
+		
+		if (m_oi.joyStick.getRawButtonReleased(5)) {
+			//for high power up cube
+			stopAllHighLevelCmd();
+			armPickReadyHCmd = new ArmPickReadyHCmd();
+			armPickReadyHCmd.start();
+			System.out.println("5");
 		}
 			
 
-		if(m_oi.joyStick.getRawButtonReleased(8))
+		if(m_oi.joyStick.getRawButtonReleased(7))
 		{
 			
-			//test auto lift up task here Move2ScaleFromReset
+			//testj auto lift up task here Move2ScaleFromReset
 			stopAllHighLevelCmd();
 			move2ScaleFromReset = new Move2ScaleFromReset();
 			move2ScaleFromReset.start();
-			testFlag = true;
+			System.out.println("7");
 
 		}
-		if(m_oi.joyStick.getRawButtonReleased(7))		{
+		if(m_oi.joyStick.getRawButtonReleased(8))		{
 			stopAllHighLevelCmd();
 			armMiddlePositionCmd = new ArmMiddlePositionCmd();
 			armMiddlePositionCmd.start();
-
+			System.out.println("8");
 			
 		}
 		if(m_oi.joyStick.getRawButtonReleased(1))		{
 			stopAllHighLevelCmd();
 			armPickReadyCmd = new ArmPickReadyCmd();
 			armPickReadyCmd.start();
+			System.out.println("1");
 		}
 		if(m_oi.joyStick.getRawButtonReleased(2))		{
 			stopAllHighLevelCmd();
 			armPickupCmd = new ArmPickupCmd();
 			armPickupCmd.start();
+			System.out.println("2");
 		}
 		
 		if(m_oi.joyStick.getRawButtonReleased(3))		{
-			/*
 			stopAllHighLevelCmd();
-			armResetCmd = new ArmResetCmd();
-			armResetCmd.start();*/
-			
+			armPosHoldCmd = new ArmPosHoldCmd();
+			armPosHoldCmd.start();
+			System.out.println("3");
 		}
 		
 		
@@ -367,16 +419,48 @@ public class Robot extends TimedRobot {
 			stopAllHighLevelCmd();
 			armPosForScaleCmd = new ArmPosForScaleCmd();
 			armPosForScaleCmd.start();
-			
+			System.out.println("4");
 		}
 		
 		if(m_oi.joyStick.getRawButtonReleased(6))		{ //RB
 			stopAllHighLevelCmd();
 			armPosReleaseCmd = new ArmPosReleaseCmd();
 			armPosReleaseCmd.start();
-			
+			System.out.println("6");
 		}
-	
+		if (m_oi.joyStick2.getRawButtonReleased(4)) {
+			stopAllHighLevelCmd();
+			
+			hookArmPositionCmd = new HookArmPositionCmd();
+			hookArmPositionCmd.start();
+			
+			System.out.println("Hook Position");
+		}
+		if (m_oi.joyStick2.getRawButtonReleased(2)) {
+			stopAllHighLevelCmd();
+			
+			releaseHookCmd = new ReleaseHookCmd();
+			releaseHookCmd.start();
+			
+			System.out.println("Released Hook");
+		}
+		if (m_oi.joyStick2.getRawButtonReleased(1)) {
+			stopAllHighLevelCmd();
+			
+			hookLiftCmd = new HookLiftCmd();
+			hookLiftCmd.start();
+		//	armResetCmd = new ArmResetCmd();
+		//	armResetCmd.start();
+			
+			System.out.println("Climbing");
+		}
+		if (m_oi.joyStick2.getRawButtonReleased(3)) {
+			stopAllHighLevelCmd();
+			armResetCmd = new ArmResetCmd();
+			armResetCmd.start();
+			
+			System.out.println("Climbing");
+		}
 		SmartDashboard.putNumber("encoder1 reading", RobotMap.jointEncoder1.getRaw());
 		SmartDashboard.putNumber("encoder2 reading", RobotMap.jointEncoder2.getRaw());
 		SmartDashboard.putNumber("encoder3 reading", RobotMap.jointEncoder3.getRaw());
@@ -397,13 +481,18 @@ public class Robot extends TimedRobot {
 	// stop all the previous command
 	
 	private void stopAllHighLevelCmd() {
-		if (move2ScaleFromReset != null) move2ScaleFromReset.cancel();
+		if (move2ScaleFromReset != null) move2ScaleFromReset.cancel();;
 		if (armResetCmd != null) armResetCmd.cancel();
 		if (armPickReadyCmd != null) armPickReadyCmd.cancel();
 		if (armPickupCmd != null) armPickupCmd.cancel();
-		if (armPosForExchangeCmd != null) armPosForExchangeCmd.cancel();
+		if (armPosHoldCmd != null) armPosHoldCmd.cancel();
 		if (armPosForScaleCmd != null) armPosForScaleCmd.cancel();
 		if (armPosReleaseCmd != null) armPosReleaseCmd.cancel();
 		if (armMiddlePositionCmd != null) armMiddlePositionCmd.cancel();
+		if (armPosForExchangeCmd != null) armPosForExchangeCmd.cancel();
+		if (armPickReadyHCmd != null) armPickReadyHCmd.cancel();
+		//if (hookLiftCmd != null) hookLiftCmd.cancel();
+		if (hookArmPositionCmd != null) hookArmPositionCmd.cancel();
+		if (releaseHookCmd != null) releaseHookCmd.cancel();
 	}
 }

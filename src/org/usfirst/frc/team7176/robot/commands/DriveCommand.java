@@ -28,10 +28,9 @@ public class DriveCommand extends Command {
 	@Override
 	protected void execute() {
 		double y = -Robot.m_oi.joyStick.getRawAxis(1);	//for joystick, pulling down is up, so we need to invert values
-		double x = Robot.m_oi.joyStick.getRawAxis(0);
+		double x = Robot.m_oi.joyStick.getRawAxis(0);	//0 or 4
 		double leftPower = x + y;
 		double rightPower = -y + x;
-		
 		Robot.drvSubsystem.driveRobot(leftPower,rightPower);
 		//System.out.println("drv command is" + leftPower + ","+ rightPower);
 	}
