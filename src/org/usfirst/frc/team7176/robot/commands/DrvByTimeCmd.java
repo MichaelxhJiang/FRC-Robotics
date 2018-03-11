@@ -23,13 +23,13 @@ public class DrvByTimeCmd extends Command {
 	//private int drvEncoderCnt = 0;
 	//private static Encoder leftEncoder = RobotMap.leftEncoder;
 	//private static Encoder rightEncoder = RobotMap.rightEncoder;
-	private static int time = 0;
+	private static double time = 0;
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
 	//private static double minDrvCmd = 0.3;
 			
 	private static double drvCmd = 0;
 	
-	public DrvByTimeCmd(double setPower, int _time) {
+	public DrvByTimeCmd(double setPower, double _time) {
 		// Use requires() here to declare subsystem dependencies
 		
 		//drvEncoderCnt = (int)(distance * CIRCLE_CNT /(Math.PI * WHEEL_D));

@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj.command.Command;
 public class RobotAutoDriveLCmd extends Command{
 	private int flag = 0;	//0 - scale is on left side, 1 - scale is on right side, 
 							//2 - scale is on left side and aggressive is on
-							//3 - switch is on left
-							//4 - switch is on right
 	private int step = 0;
 	//scale distances and speeds
 	private final static double SET_DISTANCE1 = 640;//635; //got straight distance to scale
@@ -16,10 +14,6 @@ public class RobotAutoDriveLCmd extends Command{
 	private final static double SET_DISTANCE3 = 500;//335; //got straight distance to  other side of scale
 	private final static double SET_VEL1 = 0.5;
 	private final static double SET_VEL2 = 0.8;
-
-	//switch distances and speeds
-	private final static double SWITCH_DISTANCE1 = 0;
-	private final static double SWITCH_DISTANCE2 = 0;
 	
 	private final static double SET_TURN_VEL = 0.4;
 	private final static double TURN_ANGLE1 = 90;

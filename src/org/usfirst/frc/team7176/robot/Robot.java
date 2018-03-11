@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 
 import org.usfirst.frc.team7176.robot.commands.DriveCommand;
 import org.usfirst.frc.team7176.robot.commands.DrvByDistanceCmd;
+import org.usfirst.frc.team7176.robot.commands.DrvByTimeCmd;
 import org.usfirst.frc.team7176.robot.commands.HookArmPositionCmd;
 import org.usfirst.frc.team7176.robot.commands.HookLiftCmd;
 import org.usfirst.frc.team7176.robot.commands.Joint1Cmd;
@@ -122,6 +123,7 @@ public class Robot extends TimedRobot {
 	public static RobotAutoDriveRCmd robotAutoDriveRCmd;
 	public static RobotAutoDriveMCmd robotAutoDriveMCmd;
 	public static TurnByGyroSubsystem turnByGyroSubsystem; 
+	public static DrvByTimeCmd drvByTimeCmd;
 	
 	public static GoStraightByGyroSubSystem goStraightByGyroSubSystem; 
 	
@@ -274,8 +276,14 @@ public class Robot extends TimedRobot {
 			System.out.println("Left Position");
 		}
 		else if (m_autonomousCommand == robotAutoDriveMCmd) {
-			robotAutoDriveMCmd.setFlag(0);
-			robotAutoDriveMCmd.start();
+			if (gameData.charAt(0) == 'L') {
+				robotAutoDriveMCmd.setFlag(1);
+				robotAutoDriveMCmd.start();
+			} else {
+				robotAutoDriveMCmd.setFlag(2);
+				robotAutoDriveMCmd.start();
+			}
+			
 			System.out.println("Middle Position");
 		}
 		else{

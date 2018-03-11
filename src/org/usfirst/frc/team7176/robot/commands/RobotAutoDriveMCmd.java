@@ -5,16 +5,24 @@ import org.usfirst.frc.team7176.robot.Robot;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class RobotAutoDriveMCmd extends Command{
-	private int flag = 0;
+	//Middle Position will only attempt switch
+	private int flag;	//1 - switch is Left, 2 - switch is Right
 	private int step = 0;
 	private final static double SET_DISTANCE1 = 100;//100; //go forward a little bit
 	private final static double SET_DISTANCE2 = 200;//200; //go straight distance to right
 	private final static double SET_DISTANCE3 = 500;//400  /go straight to scale
+	
+	//switch distances
+	private final static double SWITCH_DISTANCE1 = 175;
+	private final static double SWITCH_DISTANCE_RIGHT = 155;
+	private final static double SWITCH_DISTANCE_LEFT = 164;
+	private final static double SWITCH_DISTANCE_TIME = 3.0;
+	
 	private final static double SET_VEL = 0.5;
 	private final static double SET_VEL2 = 0.4;
 	private final static double SET_TURN_VEL = 0.36;
-	private final static double TURN_ANGLE1 = 90;
-	private final static double TURN_ANGLE2 = -90;
+	private final static double TURN_ANGLE1 = 90;		//right turn
+	private final static double TURN_ANGLE2 = -90;	//left turn
 	public RobotAutoDriveMCmd() {
 		System.out.println("Middle Position  + Select" + flag);
 	}
@@ -27,34 +35,67 @@ public class RobotAutoDriveMCmd extends Command{
 			step = 0;
 			// all the distance need debug and test
 			// now we only fix to go straight + turn right + go straight to cross the line 
-			Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL,SET_DISTANCE1);
+			Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL, SWITCH_DISTANCE1);
 			Robot.drvByDistanceCmd.start();
-			
 			
 		}
 
 		// Called repeatedly when this Command is scheduled to run
 		@Override
 		protected void execute() {
-			if (step == 0){
+			if (flag == 1 && step == 0){
 				if (Robot.drvByDistanceCmd.isFinished()) {
 					Robot.drvByDistanceCmd.cancel();
 					
-					Robot.turnByGyroCmd = new TurnByGyroCmd(SET_TURN_VEL, TURN_ANGLE1);  //turn to left
+					Robot.turnByGyroCmd = new TurnByGyroCmd(SET_TURN_VEL, TURN_ANGLE2);  //turn to left
 					Robot.turnByGyroCmd.start();
 					step  = 1; // got next step
 				}
-			}else if (step == 1) {
+			}else if (flag == 1 && step == 1) {
 				if (Robot.turnByGyroCmd.isFinished()) {
 					Robot.turnByGyroCmd.cancel();
 					
 					//go straight again
-					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL2,SET_DISTANCE2);
+					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL, SWITCH_DISTANCE_LEFT);
 					Robot.drvByDistanceCmd.start();
 					step = 2;
 				}
 			}
-			else if (step == 2) {
+			else if (flag == 1 && step == 2) {
+				if (Robot.drvByDistanceCmd.isFinished()) {
+					Robot.drvByDistanceCmd.cancel();
+					
+					Robot.turnByGyroCmd = new TurnByGyroCmd(SET_TURN_VEL, TURN_ANGLE1);  //turn to right
+					Robot.turnByGyroCmd.start();
+					step  = 3; // got next step
+				}
+			} else if (flag == 1 && step == 3) {
+				if (Robot.turnByGyroCmd.isFinished()) {
+					Robot.turnByGyroCmd.cancel();
+					//go straight again
+					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL,SWITCH_DISTANCE_TIME);
+					Robot.drvByTimeCmd.start();
+					step = 4;
+				}
+			} else if (flag == 2 && step == 0){
+				if (Robot.drvByDistanceCmd.isFinished()) {
+					Robot.drvByDistanceCmd.cancel();
+					
+					Robot.turnByGyroCmd = new TurnByGyroCmd(SET_TURN_VEL, TURN_ANGLE1);  //turn to right
+					Robot.turnByGyroCmd.start();
+					step  = 1; // got next step
+				}
+			}else if (flag == 2 && step == 1) {
+				if (Robot.turnByGyroCmd.isFinished()) {
+					Robot.turnByGyroCmd.cancel();
+					
+					//go straight again
+					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL, SWITCH_DISTANCE_RIGHT);
+					Robot.drvByDistanceCmd.start();
+					step = 2;
+				}
+			}
+			else if (flag == 2 && step == 2) {
 				if (Robot.drvByDistanceCmd.isFinished()) {
 					Robot.drvByDistanceCmd.cancel();
 					
@@ -62,12 +103,12 @@ public class RobotAutoDriveMCmd extends Command{
 					Robot.turnByGyroCmd.start();
 					step  = 3; // got next step
 				}
-			}else if (step == 3) {
+			}else if (flag == 2 && step == 3) {
 				if (Robot.turnByGyroCmd.isFinished()) {
 					Robot.turnByGyroCmd.cancel();
 					//go straight again
-					Robot.drvByDistanceCmd = new DrvByDistanceCmd(SET_VEL,SET_DISTANCE3);
-					Robot.drvByDistanceCmd.start();
+					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL,SWITCH_DISTANCE_TIME);
+					Robot.drvByTimeCmd.start();
 					step = 4;
 				}
 			}
@@ -78,8 +119,8 @@ public class RobotAutoDriveMCmd extends Command{
 		@Override
 		protected boolean isFinished() {
 			if (step == 4) {
-				if (Robot.drvByDistanceCmd.isFinished()) {
-					Robot.drvByDistanceCmd.cancel();
+				if (Robot.drvByTimeCmd.isFinished()) {
+					Robot.drvByTimeCmd.cancel();
 					System.out.println("done");
 					return true;
 				}
