@@ -11,7 +11,6 @@ public class SwitchDropAutoCmd extends Command {
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
 	private final static int EXE_TIME = 500;
-	private static int cnt;
 	private static int step;
 
 	public SwitchDropAutoCmd() {
@@ -25,14 +24,13 @@ public class SwitchDropAutoCmd extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
-		cnt = 0;
 		step = 0;
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		if (cnt == 50 && step == 0) {
+		if (step == 0) {
 			if (Robot.joint3Cmd.isFinished()) {
 				Robot.joint3Cmd.cancel();
 				
@@ -43,7 +41,6 @@ public class SwitchDropAutoCmd extends Command {
 				step = 1;
 			}
 		}
-		cnt++;
 	}
 
 	// Make this return true when this Command no longer needs to run execute()

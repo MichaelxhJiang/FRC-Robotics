@@ -31,6 +31,7 @@ import org.usfirst.frc.team7176.robot.commands.ReleaseHookCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveLCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveMCmd;
 import org.usfirst.frc.team7176.robot.commands.RobotAutoDriveRCmd;
+import org.usfirst.frc.team7176.robot.commands.SwitchDropAutoCmd;
 import org.usfirst.frc.team7176.robot.commands.TurnByGyroCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmResetCmd;
 import org.usfirst.frc.team7176.robot.commands.ArmPosReleaseCmd;
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
 	public static RobotAutoDriveMCmd robotAutoDriveMCmd;
 	public static TurnByGyroSubsystem turnByGyroSubsystem; 
 	public static DrvByTimeCmd drvByTimeCmd;
+	public static SwitchDropAutoCmd switchDropAutoCmd;
 	
 	public static GoStraightByGyroSubSystem goStraightByGyroSubSystem; 
 	

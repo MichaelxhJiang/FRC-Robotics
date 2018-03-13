@@ -77,6 +77,14 @@ public class RobotAutoDriveMCmd extends Command{
 					Robot.drvByTimeCmd.start();
 					step = 4;
 				}
+			} else if (flag == 1 && step == 4) {
+				if (Robot.drvByTimeCmd.isFinished()) {
+					Robot.drvByTimeCmd.cancel();
+					//go straight again
+					Robot.switchDropAutoCmd = new SwitchDropAutoCmd();
+					Robot.switchDropAutoCmd.start();
+					step = 5;
+				}
 			} else if (flag == 2 && step == 0){
 				if (Robot.drvByDistanceCmd.isFinished()) {
 					Robot.drvByDistanceCmd.cancel();
@@ -111,6 +119,14 @@ public class RobotAutoDriveMCmd extends Command{
 					Robot.drvByTimeCmd.start();
 					step = 4;
 				}
+			} else if (flag == 2 && step == 4) {
+				if (Robot.drvByTimeCmd.isFinished()) {
+					Robot.drvByTimeCmd.cancel();
+					//go straight again
+					Robot.switchDropAutoCmd = new SwitchDropAutoCmd();
+					Robot.switchDropAutoCmd.start();
+					step = 5;
+				}
 			}
 			//System.out.println("Step == " + step);
 		}
@@ -118,9 +134,9 @@ public class RobotAutoDriveMCmd extends Command{
 		// Make this return true when this Command no longer needs to run execute()
 		@Override
 		protected boolean isFinished() {
-			if (step == 4) {
-				if (Robot.drvByTimeCmd.isFinished()) {
-					Robot.drvByTimeCmd.cancel();
+			if (step == 5) {
+				if (Robot.switchDropAutoCmd.isFinished()) {
+					Robot.switchDropAutoCmd.cancel();
 					System.out.println("done");
 					return true;
 				}
