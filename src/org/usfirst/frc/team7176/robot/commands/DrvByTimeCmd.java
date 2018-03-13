@@ -33,7 +33,7 @@ public class DrvByTimeCmd extends Command {
 		// Use requires() here to declare subsystem dependencies
 		
 		//drvEncoderCnt = (int)(distance * CIRCLE_CNT /(Math.PI * WHEEL_D));
-		time = _time;
+		time = _time*1000;
 		//leftEncoder.reset();
 		//rightEncoder.reset();
 		gyroSPI.reset();
@@ -47,6 +47,7 @@ public class DrvByTimeCmd extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		System.out.println("time: " + time + " power: " + drvCmd);
 		controlStepCnt = 0;
 		//leftEncoder.reset();
 		//rightEncoder.reset();
@@ -77,12 +78,12 @@ public class DrvByTimeCmd extends Command {
 			
 			Robot.goStraightByGyroSubSystem.stopMotor();
 
-			System.out.println("go straight job done");
+			System.out.println("go straight TIME job done");
 			controlStepCnt = 0;
 			return true;
 			
-		}
-		return false;
+		} else
+			return false;
 	}
 
 	// Called once after isFinished returns tru

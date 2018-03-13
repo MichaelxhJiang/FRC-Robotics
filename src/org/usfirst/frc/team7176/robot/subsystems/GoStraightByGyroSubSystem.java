@@ -19,7 +19,7 @@ public class GoStraightByGyroSubSystem extends PIDSubsystem{
 	private static double drvCmd = 0;
 
 	public GoStraightByGyroSubSystem(double driveVel) {
-		super("GoStraightByGyro", 0.09, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
+		super("GoStraightByGyro", 0.03, 0.0, 0.0);// 0.09kP on carpet. The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
 		setAbsoluteTolerance(0.5);
 		getPIDController().setContinuous(false);
 		setInputRange(-360,360);  //angle degree

@@ -24,6 +24,7 @@ public class SwitchDropAutoCmd extends Command {
 	// Called just before this Command runs the first time
 	@Override
 	protected void initialize() {
+		System.out.println("SWITCH DROP CMD");
 		step = 0;
 	}
 
@@ -32,6 +33,7 @@ public class SwitchDropAutoCmd extends Command {
 	protected void execute() {
 		if (step == 0) {
 			if (Robot.joint3Cmd.isFinished()) {
+				System.out.println("STEP 1");
 				Robot.joint3Cmd.cancel();
 				
 				Robot.j3EncoderPos = 0;

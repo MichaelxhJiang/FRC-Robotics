@@ -14,12 +14,13 @@ public class RobotAutoDriveMCmd extends Command{
 	
 	//switch distances
 	private final static double SWITCH_DISTANCE1 = 175;
-	private final static double SWITCH_DISTANCE_RIGHT = 155;
-	private final static double SWITCH_DISTANCE_LEFT = 164;
-	private final static double SWITCH_DISTANCE_TIME = 3.0;
+	private final static double SWITCH_DISTANCE_RIGHT = 125;	//155
+	private final static double SWITCH_DISTANCE_LEFT = 164;	//164
+	private final static double SWITCH_DISTANCE_TIME = 2.2;
 	
 	private final static double SET_VEL = 0.5;
 	private final static double SET_VEL2 = 0.4;
+	private final static double SET_VEL3 = 0.3;
 	private final static double SET_TURN_VEL = 0.36;
 	private final static double TURN_ANGLE1 = 90;		//right turn
 	private final static double TURN_ANGLE2 = -90;	//left turn
@@ -73,12 +74,14 @@ public class RobotAutoDriveMCmd extends Command{
 				if (Robot.turnByGyroCmd.isFinished()) {
 					Robot.turnByGyroCmd.cancel();
 					//go straight again
-					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL,SWITCH_DISTANCE_TIME);
+					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL3,SWITCH_DISTANCE_TIME);
 					Robot.drvByTimeCmd.start();
 					step = 4;
 				}
 			} else if (flag == 1 && step == 4) {
+				System.out.println("STEP 4");
 				if (Robot.drvByTimeCmd.isFinished()) {
+					System.out.println("STEP 4 AUTO");
 					Robot.drvByTimeCmd.cancel();
 					//go straight again
 					Robot.switchDropAutoCmd = new SwitchDropAutoCmd();
@@ -115,13 +118,15 @@ public class RobotAutoDriveMCmd extends Command{
 				if (Robot.turnByGyroCmd.isFinished()) {
 					Robot.turnByGyroCmd.cancel();
 					//go straight again
-					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL,SWITCH_DISTANCE_TIME);
+					Robot.drvByTimeCmd = new DrvByTimeCmd(SET_VEL3,SWITCH_DISTANCE_TIME);
 					Robot.drvByTimeCmd.start();
 					step = 4;
 				}
 			} else if (flag == 2 && step == 4) {
+				System.out.println("STEP 4");
 				if (Robot.drvByTimeCmd.isFinished()) {
 					Robot.drvByTimeCmd.cancel();
+					System.out.println("STEP 4 AUTO");
 					//go straight again
 					Robot.switchDropAutoCmd = new SwitchDropAutoCmd();
 					Robot.switchDropAutoCmd.start();
