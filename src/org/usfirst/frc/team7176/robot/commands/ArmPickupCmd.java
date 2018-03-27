@@ -14,7 +14,7 @@ import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 public class ArmPickupCmd  extends Command {
 	private final int DOWN_TIME = 460;
 	private final int JOINT3_TIME = 800;
-	private final int MOVEUP_TIME = 1500;
+	private final int MOVEUP_TIME = 1000;
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;

@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ReleaseHookCmd  extends Command{
-	private static final int RUN_TIME = 1000;	//1 second(1000ms) to get reset positiom
+	private static final int RUN_TIME = 500;	//1 second(1000ms) to get reset positiom
 	private static final int JOINT1_POS = (int)(663  + 5.0/360 * Robot.CIRCLE_CNT_J1);// 511 -- straight down;
 	private static final int JOINT2_POS = -1364; //  -689 -- straight dwon;
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;

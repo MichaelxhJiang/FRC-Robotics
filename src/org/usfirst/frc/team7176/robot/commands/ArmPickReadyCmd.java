@@ -12,7 +12,7 @@ import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
 public class ArmPickReadyCmd  extends Command {
-	private final static int RUN_TIME = 2000;
+	private final static int RUN_TIME = 1000;
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
@@ -28,7 +28,7 @@ public class ArmPickReadyCmd  extends Command {
     private double [] moveStepY = new double[1000];
     private final int EXE_TIME = 20;
 
-	public ArmPickReadyCmd() {
+	public ArmPickReadyCmd(int time) {
 		currentX = Robot.armPosX;
         currentY = Robot.armPosY;
         targetX = Robot.READYPICKUP_X;
@@ -36,7 +36,7 @@ public class ArmPickReadyCmd  extends Command {
        
         moveStep = 0;
         
-        moveTime = RUN_TIME;
+        moveTime = time;
         movePlanStep = moveTime / EXE_TIME;
         for (int i = 0; i < movePlanStep; i++){
             moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * (i + 1);

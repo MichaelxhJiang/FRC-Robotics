@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class HookArmPositionCmd extends Command {
-	private static final int RUN_TIME = 3000;	//1 second(1000ms) 
+	private static final int RUN_TIME = 1000;	//1 second(1000ms) 
 	private static final int JOINT1_POS = (int) (619  + 5.0/360 * Robot.CIRCLE_CNT_J1) ;   // get from test  554
 	private static final int JOINT2_POS = -1181;  // -892 
 	private static final int JOINT3_POS = -263;

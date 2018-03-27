@@ -146,8 +146,9 @@ public class Robot extends TimedRobot {
     public final static int CIRCLE_CNT_J1 = 300 * 4;//(int)(7 * 4 * 188 * 72.0 / 42.0 );   //1140 = 360 *4
     public final static int CIRCLE_CNT_J2 = (int)( 3 * 4 * 188);
     public final static int SHOVEL_CIRCLE_CNT = 1988;
-    public final static double LOW_GEAR = 0.50;
+    public final static double LOW_GEAR = 0.6;
     public final static double FULL_GEAR = 0.8;
+    public final static double LOW_LOW_GEAR = 0.45;
 	public static double gear = LOW_GEAR;
 	public final static double READYPICKUP_XH = READYPICKUP_X;
 	public final static double READYPICKUP_YH = READYPICKUP_Y + 5;
@@ -494,7 +495,9 @@ public class Robot extends TimedRobot {
 		//pov(0) -- -1 not pressed, return 0 degree-- up position, 90- right, 180 - down - 270 left,  
 		// getThrottel -- right trigger button 0 -- not pressed , 1 - pressed
 		// getTwist  - left trigger button   0 -- not pressed, 1 -- pressed
-		 
+		 if (m_oi.joyStick.getPOV(0) == 0) {
+			 
+		 }
 		if (m_oi.joyStick.getThrottle() > 0.5) {
 			if (flagValue1 < 0.5) {
 				flagValue1++;
@@ -509,9 +512,11 @@ public class Robot extends TimedRobot {
 			if (flagValue1 <=0) flagValue1 = 0;
 		}
 		
-		if ( m_oi.joyStick.getTwist() > 0.6){  // Right trigger button
+		if (armPosition.toString().equals("SCALE")) {
+			gear = LOW_LOW_GEAR;
+		} else if ( m_oi.joyStick.getTwist() > 0.6){  // Right trigger button
 			gear = FULL_GEAR;
-		}else {
+		} else {
 			gear = LOW_GEAR; 
 		}
 		
@@ -544,11 +549,14 @@ public class Robot extends TimedRobot {
 		}
 		if(m_oi.joyStick.getRawButtonReleased(1))		{
 			stopAllHighLevelCmd();
-			armPickReadyCmd = new ArmPickReadyCmd();
+			if (armPosition.toString().equals("SCALE"))
+				armPickReadyCmd = new ArmPickReadyCmd(3000);
+			else
+				armPickReadyCmd = new ArmPickReadyCmd(1000);
 			armPickReadyCmd.start();
 			System.out.println("1");
 		}
-		if(m_oi.joyStick.getRawButtonReleased(2))		{
+		if(m_oi.joyStick.getRawButtonReleased(2) && armPosition.toString().equals("PICKUP")) {
 			stopAllHighLevelCmd();
 			armPickupCmd = new ArmPickupCmd();
 			armPickupCmd.start();

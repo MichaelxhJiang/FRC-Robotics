@@ -12,7 +12,7 @@ import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
 public class ArmPosForScaleCmd  extends Command {
-	private final static int RUN_TIME = 3000;
+	private final static int RUN_TIME = 1000;
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
@@ -114,7 +114,6 @@ public class ArmPosForScaleCmd  extends Command {
 	// Called once after isFinished returns true
 	@Override
 	protected void end() {
-		
 		
 	}
 
