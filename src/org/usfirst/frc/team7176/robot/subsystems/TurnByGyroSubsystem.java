@@ -8,18 +8,17 @@ import edu.wpi.first.wpilibj.Spark;
 public class TurnByGyroSubsystem extends PIDSubsystem {
 	private static Spark leftMotor1 = RobotMap.leftMotor1;
 	private static Spark leftMotor2 = RobotMap.leftMotor2;
-	private static Spark rightMotor1 = RobotMap.rightMotor2;
+	private static Spark rightMotor1 = RobotMap.rightMotor1;
 	private static Spark rightMotor2 = RobotMap.rightMotor2;
 	
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
 
 	public TurnByGyroSubsystem(double driveVel) {
-		super("TurnByGyro", 0.05, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
-		setAbsoluteTolerance(5.0);		//1 degree error
-		getPIDController().setContinuous(false);
+		super("TurnByGyro", 0.2, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
+		setAbsoluteTolerance(2.0);		//1 degree error
+		getPIDController().setContinuous(true);
 		setInputRange(-360,360);  //angle degree
 		setOutputRange(-driveVel,driveVel); 
-
 
 	}
 	
@@ -35,6 +34,7 @@ public class TurnByGyroSubsystem extends PIDSubsystem {
         	leftMotor2.pidWrite(output);
         	rightMotor1.pidWrite(output);
         	rightMotor2.pidWrite(output);
+        	System.out.println("Turn output power = " + output);
       }
     
     public void stopMotor() {
@@ -44,6 +44,7 @@ public class TurnByGyroSubsystem extends PIDSubsystem {
     	leftMotor2.set(0);
     	
     }
+   
  
 
 }

@@ -10,17 +10,17 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class TurnByGyroCmd extends Command{
 	private static Encoder leftEncoder = RobotMap.leftEncoder;
-	private static Encoder rightEncoder = RobotMap.rightEncoder;
+	//private static Encoder rightEncoder = RobotMap.rightEncoder;
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
 	
 	private static int controlStepCnt = 0;
 	private static double turnAngle = 0;
+	private static final int TIMEOUT_TH = 2 * 1000 / 20;  // 2seconds
 	public TurnByGyroCmd(double drvCmd, double angle) {
 		// Use requires() here to declare subsystem dependencies
-		
-		
+
 		leftEncoder.reset();
-		rightEncoder.reset();
+		//rightEncoder.reset();
 		gyroSPI.reset();
 		controlStepCnt = 0;
 		Robot.turnByGyroSubsystem = new TurnByGyroSubsystem(drvCmd);
@@ -32,7 +32,7 @@ public class TurnByGyroCmd extends Command{
 		@Override
 		protected void initialize() {
 			leftEncoder.reset();
-			rightEncoder.reset();
+			//rightEncoder.reset();
 			gyroSPI.reset();
 		}
 
@@ -46,13 +46,20 @@ public class TurnByGyroCmd extends Command{
 				Robot.turnByGyroSubsystem.setSetpoint(turnAngle);  //
 				
 				Robot.turnByGyroSubsystem.enable();
+				System.out.println("turn angle = " + turnAngle);
 			}
 		}
 
 		// Make this return true when this Command no longer needs to run execute()
 		@Override
 		protected boolean isFinished() {
-			if ((controlStepCnt > 10) && Robot.turnByGyroSubsystem.onTarget()) {
+			if (controlStepCnt > TIMEOUT_TH) {
+				System.out.println("turn job done by timeout 3 seconds");
+				controlStepCnt = 0;
+				Robot.turnByGyroSubsystem.disable();
+				Robot.turnByGyroSubsystem.stopMotor();
+				return true;
+			}else if((controlStepCnt > 10) && Robot.turnByGyroSubsystem.onTarget()) {
 				System.out.println("turn job done");
 				controlStepCnt = 0;
 				Robot.turnByGyroSubsystem.disable();

@@ -3,50 +3,35 @@ package org.usfirst.frc.team7176.robot.commands;
 import org.usfirst.frc.team7176.robot.KinematicsFunction;
 import org.usfirst.frc.team7176.robot.Robot;
 import org.usfirst.frc.team7176.robot.RobotMap;
+import org.usfirst.frc.team7176.robot.Robot.ArmPosition;
 
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ArmMiddlePositionCmd extends Command {
-	private static final int exeTime = 3000;	//1 second(1000ms) to get reset positiom
+	private final static int RUN_TIME =2000; 
+	private final static int DELAY_TIME = 450;
+	private final int JOINT1_POS = 632;   //encoder position need test
+	private final int JOINT2_POS = -1980;  // encoder position need test
+	private final int JOINT3_POS = -30; //degree
+	
+	
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
 
 	private int moveStep = 0;
-    private int moveTime = 3000;
+    private int moveTime = RUN_TIME;
     private int movePlanStep = 0;
-    private double targetX = 0;
-    private double targetY = 0;
-    private double currentX = 0;
-    private double currentY = 0;
-    private double [] moveStepX = new double[1000];
-    private double [] moveStepY = new double[1000];
-    private final int EXE_TIME = 20;
+    
+    
 
 	public ArmMiddlePositionCmd() {
-		 currentX = Robot.armPosX;
-         currentY = Robot.armPosY;
-         targetX = Robot.MIDDLE_X;
-         targetY = Robot.MIDDLE_Y;
-         
+        
          moveStep = 0;
-         
-         moveTime = exeTime;
-         movePlanStep = moveTime / EXE_TIME;
-         for (int i = 0; i < movePlanStep; i++){
-             moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * i;
-             moveStepY[i] = currentY + (targetY - currentY) / movePlanStep * i;
-         }
-         //uppder elbow function getJointAngleL
-         double[] thelta = KinematicsFunction.getJointAngleL(moveStepX[moveStep], moveStepY[moveStep]);
-
-         Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
-         Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;
-         
-         Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) *Robot. CIRCLE_CNT));
-         Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT)); ;
-         
+    
+         moveTime = RUN_TIME;
+         movePlanStep = moveTime / 20;
         
 		
 	}
@@ -55,14 +40,15 @@ public class ArmMiddlePositionCmd extends Command {
 	protected void initialize() {
 		System.out.println("Starting Arm Middle Position Cmd");
 		//go to that encoder position, hard code some value here, encoder value and position value
-        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), 1165, moveTime);
-        Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), -1900, moveTime);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-15.0/360 * Robot.SHOVEL_CIRCLE_CNT), moveTime);
-        Robot.joint1Cmd.start();
-        Robot.joint2Cmd.start();
-        Robot.joint3Cmd.start();
-        Robot.armPosX = Robot.MIDDLE_X;
-        Robot.armPosY = Robot.MIDDLE_Y;
+        Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), JOINT1_POS, moveTime / 2 ); //  
+       // Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), JOINT2_POS, moveTime);  //3s
+	   // Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(JOINT3_POS/360.0 * Robot.SHOVEL_CIRCLE_CNT), moveTime - DELAY_TIME);
+	    Robot.joint1Cmd.start();
+	  //  Robot.joint2Cmd.start();
+	 //   Robot.joint3Cmd.start();
+        
+        moveStep = 0;
+
 	}
 
 	// Called repeatedly when this Command is scheduled to run
@@ -70,6 +56,14 @@ public class ArmMiddlePositionCmd extends Command {
 	protected void execute() {
 		System.out.println("moveStep = " + moveStep);
 		 moveStep++;
+		 if (moveStep == DELAY_TIME / 20) {
+			 Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), JOINT2_POS, moveTime- DELAY_TIME);  //
+			 Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(JOINT3_POS/360.0 * Robot.SHOVEL_CIRCLE_CNT), moveTime - DELAY_TIME);//
+			 Robot.joint2Cmd.start();
+			 Robot.joint3Cmd.start();
+			 System.out.println("start moving Joint2, 3");
+		 }
+
          if (moveStep >= movePlanStep)
          {
         	 Robot.armPosX = Robot.MIDDLE_X;
@@ -89,6 +83,7 @@ public class ArmMiddlePositionCmd extends Command {
 		if (moveStep >= movePlanStep) {
 			
 			System.out.println("middle position Job done");
+			Robot.armPosition = ArmPosition.MIDDLE_POS;
 			return true;
 		}else {
 		

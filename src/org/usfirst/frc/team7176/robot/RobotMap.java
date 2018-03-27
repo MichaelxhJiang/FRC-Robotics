@@ -37,12 +37,17 @@ public class RobotMap {
 	 public static TalonSRX hookMotor2 = new TalonSRX(1);
 	 
 	 public static Encoder leftEncoder = new Encoder(0,1,false,EncodingType.k4X);
-	 public static Encoder rightEncoder = new Encoder(2,3,false,EncodingType.k4X);
+	// public static Encoder rightEncoder = new Encoder(2,3,false,EncodingType.k4X);
+	 
+	 
+	 public static TalonSRX joint1Motor_1  = new TalonSRX(2);
+	 public static TalonSRX joint1Motor_2  = new TalonSRX(3);
 	 
 	 public static Encoder jointEncoder1 = new Encoder(4, 5, false, EncodingType.k4X);;
 	 public static Encoder jointEncoder2 = new Encoder(6, 7, false, EncodingType.k4X);;
 	 public static Encoder jointEncoder3 = new Encoder(8, 9, false, EncodingType.k4X);;
 	 
+	 public static Encoder hookEncoder = new Encoder(2,3,false, EncodingType.k4X);
 	 	 
 	 public static ADXRS450_Gyro gyroSPI = new ADXRS450_Gyro();  
 	 

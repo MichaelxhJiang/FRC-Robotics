@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.command.Command;
 import org.usfirst.frc.team7176.robot.Robot;
 
 public class Joint1Cmd  extends Command {
+	private static final int TIMEOUT_TH = 50; // 50 * 20ms = 1 second
 	private int curPos = 0;
 	private int setPos = 0;
 	private int stepCnt = 1; // based on 20ms period
@@ -12,7 +13,10 @@ public class Joint1Cmd  extends Command {
 	private int targetPos = 0;
 	public Joint1Cmd(int currentPosition, int setPosition, int time) {
 		requires(Robot.joint1Subsystem);
+	//	System.out.println("Joint 1 position = " + setPosition);
 		curPos = currentPosition;
+		setPosition = Math.min(setPosition, Robot.JOINT1_HLM);
+		setPosition = Math.max(setPosition, Robot.JOINT1_LLM);
 		setPos = setPosition;
 		stepNum = time/20;
 		stepValue = ((double)setPos - curPos)/stepNum;
@@ -33,9 +37,7 @@ public class Joint1Cmd  extends Command {
 	// Called repeatedly when this Command is scheduled to run
 	@Override
 	protected void execute() {
-		if (stepCnt != stepNum) {
-			stepCnt ++;	
-		}
+		stepCnt ++;	
 		
 		if (stepCnt < stepNum) {
 			targetPos = (int) (curPos +  stepValue * stepCnt);	
@@ -52,9 +54,12 @@ public class Joint1Cmd  extends Command {
 	// Make this return true when this Command no longer needs to run execute()
 	@Override
 	protected boolean isFinished() {
-		if ((stepCnt == stepNum) && Robot.joint1Subsystem.onTarget()) {
+		if (stepCnt > stepNum + TIMEOUT_TH) {
+			System.out.println("On target 1 by time out 1 second");
+			return true;
+		}else if ((stepCnt > stepNum) && Robot.joint1Subsystem.onTarget()) {
 			//Robot.jointSubsystem.disable();  //for arm maybe we could not disable the PID to keep arm at position
-			System.out.println("On target");
+			System.out.println("On target 1");
 			return true;
 		}else {
 		

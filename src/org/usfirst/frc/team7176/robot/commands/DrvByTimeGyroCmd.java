@@ -16,26 +16,21 @@ import org.usfirst.frc.team7176.robot.subsystems.GoStraightByGyroSubSystem;
 /**
  * An example command.  You can replace me with your own command.
  */
-public class DrvByTimeCmd extends Command {
-	private final static double WHEEL_D = 15.24;  //wheel diameter in cm
-	private final static int CIRCLE_CNT = 1440;
+public class DrvByTimeGyroCmd extends Command {
 	private int controlStepCnt = 0;
-	//private int drvEncoderCnt = 0;
-	//private static Encoder leftEncoder = RobotMap.leftEncoder;
-	//private static Encoder rightEncoder = RobotMap.rightEncoder;
+
 	private static double time = 0;
 	private static ADXRS450_Gyro gyroSPI = RobotMap.gyroSPI;
 	//private static double minDrvCmd = 0.3;
 			
 	private static double drvCmd = 0;
 	
-	public DrvByTimeCmd(double setPower, double _time) {
+	public DrvByTimeGyroCmd(double setPower, double _time) {
 		// Use requires() here to declare subsystem dependencies
 		
 		//drvEncoderCnt = (int)(distance * CIRCLE_CNT /(Math.PI * WHEEL_D));
-		time = _time*1000;
-		//leftEncoder.reset();
-		//rightEncoder.reset();
+		time = _time;
+
 		gyroSPI.reset();
 		controlStepCnt = 0;
 		drvCmd = setPower;
@@ -79,11 +74,12 @@ public class DrvByTimeCmd extends Command {
 			Robot.goStraightByGyroSubSystem.stopMotor();
 
 			System.out.println("go straight TIME job done");
-			controlStepCnt = 0;
 			return true;
 			
-		} else
+		} else {
+			System.out.println("false");
 			return false;
+		}
 	}
 
 	// Called once after isFinished returns tru
@@ -97,3 +93,4 @@ public class DrvByTimeCmd extends Command {
 	protected void interrupted() {
 	}
 }
+

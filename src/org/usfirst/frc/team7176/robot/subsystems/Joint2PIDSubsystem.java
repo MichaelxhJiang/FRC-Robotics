@@ -10,7 +10,7 @@ public class Joint2PIDSubsystem extends PIDSubsystem { // This system extends PI
 	Encoder encoder = RobotMap.jointEncoder2;
 
 	public Joint2PIDSubsystem() {
-		super("Joint2", 0.03, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
+		super("Joint2", 0.02, 0.0, 0.0);// The constructor passes a name for the subsystem and the P, I and D constants that are used when computing the motor output
 		setAbsoluteTolerance(2);
 		getPIDController().setContinuous(false);
 		setInputRange(-32767,32767);
@@ -26,7 +26,7 @@ public class Joint2PIDSubsystem extends PIDSubsystem { // This system extends PI
 
     protected void usePIDOutput(double output) {
     	motor.pidWrite(output); // this is where the computed output value from the PIDController is applied to the motor
-    	
+        	
     }
 
 

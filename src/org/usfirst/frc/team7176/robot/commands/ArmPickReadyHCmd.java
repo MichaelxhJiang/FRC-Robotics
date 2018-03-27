@@ -5,19 +5,20 @@ import edu.wpi.first.wpilibj.Encoder;
 import org.usfirst.frc.team7176.robot.KinematicsFunction;
 import org.usfirst.frc.team7176.robot.Robot;
 import org.usfirst.frc.team7176.robot.RobotMap;
+import org.usfirst.frc.team7176.robot.Robot.ArmPosition;
 import org.usfirst.frc.team7176.robot.commands.Joint1Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint2Cmd;
 import org.usfirst.frc.team7176.robot.commands.Joint3Cmd;
 
 
 public class ArmPickReadyHCmd  extends Command {
-	
+	private final static int RUN_TIME = 1000;
 	private Encoder j1Encoder  = RobotMap.jointEncoder1;
 	private Encoder j2Encoder  = RobotMap.jointEncoder2;
 	private Encoder j3Encoder  = RobotMap.jointEncoder3;
 
 	private int moveStep = 0;
-    private int moveTime = 3000;
+    private int moveTime = 1000;		//3000
     private int movePlanStep = 0;
     private double targetX = 0;
     private double targetY = 0;
@@ -35,11 +36,11 @@ public class ArmPickReadyHCmd  extends Command {
        
         moveStep = 0;
         
-        moveTime = 3000;
+        moveTime = RUN_TIME;
         movePlanStep = moveTime / EXE_TIME;
         for (int i = 0; i < movePlanStep; i++){
-            moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * i;
-            moveStepY[i] = currentY + (targetY - currentY) / movePlanStep * i;
+            moveStepX[i] = currentX + (targetX - currentX) / movePlanStep * (i + 1);
+            moveStepY[i] = currentY + (targetY - currentY) / movePlanStep * (i + 1);
         }
         //elbow up control
         double[] thelta = KinematicsFunction.getJointAngleL(moveStepX[moveStep], moveStepY[moveStep]);
@@ -47,8 +48,8 @@ public class ArmPickReadyHCmd  extends Command {
         Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
         Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;
         
-        Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) * Robot. CIRCLE_CNT));
-        Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT)); ;
+        Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) * Robot. CIRCLE_CNT_J1));
+        Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT_J2)); ;
         
         double[] pos = KinematicsFunction.getPositionXY(thelta[0], thelta[1]);
         Robot.armPosX = pos[0];
@@ -61,7 +62,7 @@ public class ArmPickReadyHCmd  extends Command {
 		 //go to that encoder position
         Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
         Robot.joint2Cmd = new Joint2Cmd(j2Encoder.getRaw(), Robot.j2EncoderPos, EXE_TIME);
-        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(38.0/360 * Robot.SHOVEL_CIRCLE_CNT), 1500);
+        Robot.joint3Cmd = new Joint3Cmd(j3Encoder.getRaw(), (int)(-11.0/360 * Robot.SHOVEL_CIRCLE_CNT), RUN_TIME);
         Robot.joint1Cmd.start();
         Robot.joint2Cmd.start();
         Robot.joint3Cmd.start();
@@ -84,8 +85,8 @@ public class ArmPickReadyHCmd  extends Command {
             Robot.j1TurnAngle = thelta[0] - Robot.j1ResetAngle;
             Robot. j2TurnAngle = thelta[1] - Robot.j2ResetAngle;
             
-            Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) *Robot. CIRCLE_CNT));
-            Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT)); ;
+            Robot.j1EncoderPos = (int)(Robot.j1ResetPos - (Robot.j1TurnAngle / (2 * Math.PI) *Robot. CIRCLE_CNT_J1));
+            Robot.j2EncoderPos = (int)(Robot.j2ResetPos + (Robot.j2TurnAngle / (2 * Math.PI) * Robot.CIRCLE_CNT_J2)); ;
             
             //go to that encoder position
             Robot.joint1Cmd = new Joint1Cmd(j1Encoder.getRaw(), Robot.j1EncoderPos, EXE_TIME);
@@ -95,8 +96,8 @@ public class ArmPickReadyHCmd  extends Command {
             double[] pos = KinematicsFunction.getPositionXY(thelta[0], thelta[1]);
             Robot.armPosX = pos[0];
             Robot.armPosY = pos[1];
-            System.out.println("j1Encoder pos = " + Robot.j1EncoderPos);
-            System.out.println("j2Encoder pos = " + Robot.j2EncoderPos);
+            //System.out.println("j1Encoder pos = " + Robot.j1EncoderPos);
+            //System.out.println("j2Encoder pos = " + Robot.j2EncoderPos);
         }
 	}
 
@@ -106,6 +107,7 @@ public class ArmPickReadyHCmd  extends Command {
 		if (moveStep >= movePlanStep) {
 			//Robot.joint3Subsystem.disable();  //for arm maybe we could not disable the PID to keep arm at position
 			System.out.println("Pick up ready Job done");
+			Robot.armPosition = ArmPosition.PICKUP_H;
 			return true;
 		}else {
 		

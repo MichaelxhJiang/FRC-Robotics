@@ -32,11 +32,20 @@ public class DriveSubsystem extends Subsystem {
 	}
 	
 	public void driveRobot(double leftPower, double rightPower) {
-	
-		left1.set(leftPower * Robot.gear);
-		left2.set(leftPower * Robot.gear);
-		right1.set(rightPower * Robot.gear);
-		right2.set(rightPower * Robot.gear);
+		
+		if (!Robot.inPickUpProcess || !Robot.autoPickUpFlag) {
+			left1.set(leftPower * Robot.gear);
+			left2.set(leftPower * Robot.gear);
+			right1.set(rightPower * Robot.gear);
+			right2.set(rightPower * Robot.gear);
+		}else {
+			if (!Robot.inMovingCarBack) {
+				left1.set(0);
+				left2.set(0);
+				right1.set(0);
+				right2.set(0);
+			}
+		}
 
 		
 	}
